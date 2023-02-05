@@ -14,6 +14,8 @@ var customers = [
 var can_play = true
 var can_show_face_again = true
 var customer_is_killer =  false
+var faces_m = []
+var faces_h = []
 
 func get_rand_in_range_array(array):
 	return array[rng.randi_range(0,len(array)-1)]
@@ -21,25 +23,34 @@ func get_rand_in_range_array(array):
 func generate_random_face():
 	pass
 
+
+#func get_face_h():
+#	return 
+
 func generate_random_customer():
-	var folder = rng.randi_range(1,2)
-	var n_img = rng.randi_range(1,6)
+	#var folder = rng.randi_range(1,3)
+	#var n_img = rng.randi_range(1,6)
+	#var folder_sub = "h"
+	#if not hombre: folder_sub = "m"
 	
 	
 	var hombre = rng.randi_range(1,2) == 1
 	
-	var folder_sub = "h"
-	if not hombre: folder_sub = "m"
-	
 	var nombre = get_rand_in_range_array(Global.nombs_h)
 	if not hombre: nombre = get_rand_in_range_array(Global.nombs_m)
 	
+	var face = ""
+	if hombre:
+		face = faces_h.pop_back()
+	else:
+		face = faces_m.pop_back()
+		
 	var customer = {
 		"id": rng.randi(),
 		"name": "%s %s" % [nombre, get_rand_in_range_array(Global.aps)], 
 		"profesion": get_rand_in_range_array(Global.profesiones), 
 		"nacionalidad": get_rand_in_range_array(Global.nacionalidades), 
-		"face": "%s/%s/%s" % [folder, folder_sub, n_img],
+		"face": face,
 		"wait_time": 15*Global.difficulty,
 		"dialog": get_rand_in_range_array(Global.dialogs),
 		"info": get_rand_in_range_array(Global.infos),
@@ -57,16 +68,28 @@ func generate_random_customer():
 	customer["profesion_answer"] = customer["profesion_answer"].replace("%profesion%", customer["profesion"])
 	customer["nombre_answer"] = customer["nombre_answer"].replace("%nombre%", customer["name"])
 	
-	discarded_faces.push_back("%s/m/%s" % [folder, n_img])
+	#discarded_faces.push_back("%s/m/%s" % [folder, n_img])
 	return customer
 
 var current_customer = {}
 var killers_indexes = []
 func _ready():
+	
+	for i in range(1,5):
+		for j in range(1,7):
+			faces_m.append("%s/m/%s" % [i, j])
+			faces_h.append("%s/h/%s" % [i, j])
+	
+	print(len(faces_h), "--" ,len(faces_m))
+	print(faces_h)
+	faces_h.shuffle()
+	faces_m.shuffle()
+	print(faces_h)
+	
 	rng.randomize()
 	customers_to_kill.push_back(generate_random_customer())
-	#customers_to_kill.push_back(generate_random_customer())
-	#customers_to_kill.push_back(generate_random_customer())
+	customers_to_kill.push_back(generate_random_customer())
+	customers_to_kill.push_back(generate_random_customer())
 	customers_to_kill.push_back(generate_random_customer())
 	$Book.set_customers_to_kill(customers_to_kill)
 	
