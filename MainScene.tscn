@@ -94,7 +94,7 @@ visible = false
 margin_left = 315.0
 margin_top = 131.0
 margin_right = 355.0
-margin_bottom = 171.0
+margin_bottom = 175.0
 rect_scale = Vector2( 9.75024, 8.2214 )
 color = Color( 0.207843, 0.180392, 0.180392, 0.878431 )
 
@@ -116,11 +116,19 @@ text = "Preguntar nombre"
 
 [node name="ProfButton" type="Button" parent="QuestionRect"]
 margin_left = 2.6666
-margin_top = 23.8402
+margin_top = 23.3537
 margin_right = 159.667
-margin_bottom = 43.8402
+margin_bottom = 43.3537
 rect_scale = Vector2( 0.215586, 0.329691 )
 text = "Preguntar profesión"
+
+[node name="PedidoButton" type="Button" parent="QuestionRect"]
+margin_left = 2.97429
+margin_top = 33.3277
+margin_right = 159.975
+margin_bottom = 53.3277
+rect_scale = Vector2( 0.215586, 0.329691 )
+text = "Preguntar pedido"
 
 [connection signal="entered" from="Silueta2" to="." method="_on_Silueta2_entered"]
 [connection signal="item_give" from="Silueta2" to="." method="_on_Silueta2_item_give"]
@@ -130,3 +138,4 @@ text = "Preguntar profesión"
 [connection signal="pressed" from="QuestionRect/NacButton" to="." method="_on_NacButton_pressed"]
 [connection signal="pressed" from="QuestionRect/NomButton" to="." method="_on_NomButton_pressed"]
 [connection signal="pressed" from="QuestionRect/ProfButton" to="." method="_on_ProfButton_pressed"]
+[connection signal="pressed" from="QuestionRect/PedidoButton" to="." method="_on_PedidoButton_pressed"]

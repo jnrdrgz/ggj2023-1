@@ -90,6 +90,12 @@ var nombre_answers = [
 	"¿Me puede dar mi pedido?",
 ]
 
+var pedido_answers = [
+	"%pedido%",
+	"Ya te dije.",
+	"...",
+]
+
 var dialogic_replace = {
 	"hi_text": ""
 }

@@ -27,6 +27,9 @@ func generate_random_face():
 #func get_face_h():
 #	return 
 
+func replace_template(answer, template):
+	return answer.replace(template, answer)
+
 func generate_random_customer():
 	#var folder = rng.randi_range(1,3)
 	#var n_img = rng.randi_range(1,6)
@@ -58,6 +61,7 @@ func generate_random_customer():
 		"nacionalidad_answer": get_rand_in_range_array(Global.nacionalidad_answers), 
 		"profesion_answer": get_rand_in_range_array(Global.profesion_answers), 
 		"nombre_answer": get_rand_in_range_array(Global.nombre_answers), 
+		"pedido_answer": get_rand_in_range_array(Global.pedido_answers), 
 		
 		"want": get_rand_in_range_array(Global.store_items_str), 
 	}
@@ -67,6 +71,8 @@ func generate_random_customer():
 	customer["nacionalidad_answer"] = customer["nacionalidad_answer"].replace("%nacionalidad%", customer["nacionalidad"])
 	customer["profesion_answer"] = customer["profesion_answer"].replace("%profesion%", customer["profesion"])
 	customer["nombre_answer"] = customer["nombre_answer"].replace("%nombre%", customer["name"])
+
+	customer["pedido_answer"] = customer["pedido_answer"].replace("%pedido%", customer["dialog"])
 	
 	#discarded_faces.push_back("%s/m/%s" % [folder, n_img])
 	return customer
@@ -80,11 +86,8 @@ func _ready():
 			faces_m.append("%s/m/%s" % [i, j])
 			faces_h.append("%s/h/%s" % [i, j])
 	
-	print(len(faces_h), "--" ,len(faces_m))
-	print(faces_h)
 	faces_h.shuffle()
 	faces_m.shuffle()
-	print(faces_h)
 	
 	rng.randomize()
 	customers_to_kill.push_back(generate_random_customer())
@@ -182,11 +185,17 @@ func _on_Silueta2_entered():
 		customer_is_killer = false
 		
 	Global.dialogic_replace["hi_text"] = current_customer["dialog"]
+	
 	var new_dialog = Dialogic.start('Hi')
+	show_face_in_dialog()
 	#Dialogic.set_variable()
 	add_child(new_dialog)
 
 	new_dialog.connect("timeline_end", self, "after_dialog")
+
+func show_face_in_dialog():
+	$CurrentFace.texture = load("res://assets/faces/" + current_customer["face"] + ".png")
+	$CurrentFace.visible = true
 
 func show_face():
 	$CurrentFace.texture = load("res://assets/faces/" + current_customer["face"] + ".png")
@@ -194,10 +203,11 @@ func show_face():
 	$show_face_timer.start()
 
 func after_dialog(timeline_name):
-	show_face()
+	#show_face()
+	after_face_timer()
 	print("dialog end")
 
-func _on_show_face_timer_timeout():
+func after_face_timer():
 	$CurrentFace.visible = false
 	can_play = true
 	
@@ -206,6 +216,9 @@ func _on_show_face_timer_timeout():
 	$decision_timer.set_wait_time(current_customer["wait_time"])
 	$ProgressTexture.max_value = current_customer["wait_time"]
 	$decision_timer.start()
+
+func _on_show_face_timer_timeout():
+	after_face_timer()
 
 
 func _on_decision_timer_timeout():
@@ -268,6 +281,10 @@ func _on_ProfButton_pressed():
 	$QuestionRect.visible = false
 	get_customer_answer("profesion_answer")
 
+func _on_PedidoButton_pressed():
+	$QuestionRect.visible = false
+	get_customer_answer("pedido_answer")
+
 func say_goodbye_dialog(dialog):
 	Global.dialogic_replace["hi_text"] = dialog
 	var new_dialog = Dialogic.start('Hi')
@@ -328,3 +345,5 @@ func make_goodbye(timeline_name):
 		pedidos_errados = 0
 		
 		game_state = "game_over"
+
+
